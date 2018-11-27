@@ -3,10 +3,19 @@ version: '3'
 services:
   reverse-proxy:
     image: traefik
-    command: --api --docker --web
+    command:  -c /dev/null --api --docker --docker.domain=docker.localhost --logLevel=DEBUG
     ports:
       - "80:80"
       - "8080:8080"
       - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+
+  jenkins:
+    image: leandrosb/jenkins:0.2
+
+    labels:
+      - "traefik.backend=jenkins"
+      - "traefik.frontend.rules=Host:jenkins.docker.localhost"
+    ports:
+      - "81:8080"
