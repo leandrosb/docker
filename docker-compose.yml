@@ -11,24 +11,19 @@ services:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     links:
       - rundeck:rundeck
+      - jenkins:jenkins 
 
-  #reverse-proxy:
-  #  image: traefik
-  #  container_name: proxy-reverse
-  #  command:  -c /dev/null --api --docker --docker.domain=docker.localhost --logLevel=DEBUG
-  #  ports:
-  #    - "80:80"
-  #    - "8080:8080"
-  #    - "443:443"
-  #  volumes:
-  #    - /var/run/docker.sock:/var/run/docker.soc
+  jenkins:
+    build: ./jenkins
+    container_name: jenkins
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+      - "5000:5000"
 
   rundeck:
     container_name: rundeck
     image: rundeck/rundeck:3.0.8
-    #labels:
-    #  - "traefik.backend=rundeck"
-    #  - "traefik.frontend.rules=Host:rundeck.docker.localhost"
     ports:
       - "4440:4440"
       - "4443:4443"
